@@ -1,27 +1,36 @@
 const express = require('express');
-const httpProxy = require('http-proxy');
-
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
-const proxy = httpProxy.createProxyServer();
+// Middleware para redirigir solicitudes a /auth y /notes
+app.use('/auth', createProxyMiddleware({
+    target: 'http://auth:3001',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/auth': ''
+    }
+}));
 
-app.all('/auth/*', (req, res) => {
-  proxy.web(req, res, { target: 'http://auth:3000' });
+app.use('/api/notes', createProxyMiddleware({
+    target: 'http://notes:3002',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/notes': ''
+    }
+}));
+
+// Servir las páginas de autenticación y notas desde el contenedor de proxy
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/auth.html');
 });
 
-app.all('/notas/*', (req, res) => {
-  proxy.web(req, res, { target: 'http://notas:3000' });
+app.get('/notes', (req, res) => {
+    res.sendFile(__dirname + '/public/notes.html');
 });
 
-// Manejo de errores en el proxy
-proxy.on('error', (err, req, res) => {
-  console.error(err);
-  res.status(500).send('Proxy Error');
-});
-
-// Inicia el servidor en el puerto 80 para que esté disponible externamente
-const PORT = process.env.PORT || 80;
-app.listen(PORT, () => {
-  console.log(`Proxy server running on port ${PORT}`);
+app.listen(80, () => {
+    console.log('Proxy server running on port 80 ==> http://localhost:80');
 });
