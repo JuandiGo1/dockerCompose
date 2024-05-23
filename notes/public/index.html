@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Service</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Notes Service</h1>
+    <form id="noteForm">
+        <label for="noteId">Note ID:</label>
+        <input type="text" id="noteId" name="noteId">
+        <label for="noteContent">Content:</label>
+        <input type="text" id="noteContent" name="noteContent">
+        <button type="submit">Add Note</button>
+    </form>
+    <ul id="notesList"></ul>
+    <script>
+        document.getElementById('noteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/notes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: parseInt(e.target.noteId.value),
+                    content: e.target.noteContent.value
+                })
+            }).then(response => response.json()).then(data => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${data.id}, Content: ${data.content}`;
+                document.getElementById('notesList').appendChild(li);
+            });
+        });
+
+        fetch('/notes').then(response => response.json()).then(data => {
+            const notesList = document.getElementById('notesList');
+            data.forEach(note => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${note.id}, Content: ${note.content}`;
+                notesList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>
