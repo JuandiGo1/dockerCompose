@@ -12,11 +12,11 @@ app.use('/auth', createProxyMiddleware({
     }
 }));
 
-app.use('/api/notes', createProxyMiddleware({
+app.use('/notes', createProxyMiddleware({
     target: 'http://notes:3002',
     changeOrigin: true,
     pathRewrite: {
-        '^/api/notes': ''
+        '^/notes': ''
     }
 }));
 
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/auth.html');
 });
 
-app.get('/notes', (req, res) => {
+app.get('/notes-page', (req, res) => {
     res.sendFile(__dirname + '/public/notes.html');
 });
 

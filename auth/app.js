@@ -5,7 +5,7 @@ app.use(express.static('public')); // Servir archivos estáticos
 
 let users = {}
 
-app.post('/auth/signup', (req, res) => {
+app.post('/signup', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).send('Username and password are required');
@@ -17,7 +17,7 @@ app.post('/auth/signup', (req, res) => {
     res.send('User signed up successfully');
 });
 
-app.post('/auth/login', (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).send('Username and password are required');

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Service</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Notes Service</h1>
+
+    <form id="addStudentForm">
+        <label for="id">Student ID:</label>
+        <input type="number" id="id" name="id" required>
+        <label for="name">Student Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="grade">Student Grade:</label>
+        <input type="number" id="grade" name="grade" required>
+        <button type="submit">Add Student</button>
+    </form>
+
+    <form id="updateStudentForm">
+        <label for="updateId">Student ID:</label>
+        <input type="number" id="updateId" name="id" required>
+        <label for="updateGrade">New Grade:</label>
+        <input type="number" id="updateGrade" name="grade" required>
+        <button type="submit">Update Grade</button>
+    </form>
+
+    <form id="deleteStudentForm">
+        <label for="deleteId">Student ID:</label>
+        <input type="number" id="deleteId" name="id" required>
+        <button type="submit">Delete Student</button>
+    </form>
+
+    <button id="getStudentsButton">Get All Students</button>
+
+    <div id="studentsList"></div>
+
+    <script>
+        document.getElementById('addStudentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            fetch('/notes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: e.target.id.value,
+                    name: e.target.name.value,
+                    grade: e.target.grade.value
+                })
+            }).then(response => response.json()).then(data => alert('Student added successfully!'));
+        });
+
+        document.getElementById('updateStudentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const studentId = e.target.updateId.value;
+            console.log('Updating student with ID:', studentId);
+            fetch('/notes/' + studentId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    grade: e.target.updateGrade.value
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+                .then(data => {
+                    console.log(data); // Verificar la respuesta del servidor
+                    alert('Grade updated successfully!');
+                })
+                .catch(error => {
+                    console.error('There was a problem with the update request:', error);
+                    alert('There was a problem updating the grade.');
+                });
+        });
+
+        document.getElementById('deleteStudentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            fetch('/notes/' + e.target.deleteId.value, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Student deleted successfully!');
+                } else {
+                    alert('Error deleting student.');
+                }
+            });
+        });
+
+        document.getElementById('getStudentsButton').addEventListener('click', function () {
+            fetch('/notes')
+                .then(response => response.json())
+                .then(data => {
+                    const studentsList = document.getElementById('studentsList');
+                    studentsList.innerHTML = '<ul>' + data.map(student => `<li>${student.id} - ${student.name}: ${student.grade}</li>`).join('') + '</ul>';
+                });
+        });
+    </script>
+</body>
+
+</html>
