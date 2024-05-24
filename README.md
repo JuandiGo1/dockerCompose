@@ -22,7 +22,7 @@ Para ejecutar este proyecto localmente, necesitarás tener instalado Docker en t
 
 1. Clona este repositorio en tu máquina local.
 2. Abre una terminal, asegurate de tener abierto Docker Desktop y navega hasta la carpeta raíz del proyecto.
-3. Ejecuta en la terminal: docker-compose up --build.
+3. Ejecuta en la terminal: `docker-compose up --build`.
 4. Abre tu navegador web y ve a `http://localhost:80` para acceder al proyecto.
 
 ## Auth
