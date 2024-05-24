@@ -1,4 +1,6 @@
 # Proyecto con DockerCompose
+[![GitHub lellerena](https://img.shields.io/badge/by-caheras-blue)](https://github.com/caheras)
+[![GitHub JuandiGo1](https://img.shields.io/badge/by-JuandiGo1-red)](https://github.com/JuandiGo1)
 
 Implementación de un login y un CRUD sin DB.
 
